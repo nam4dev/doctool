@@ -1,0 +1,2 @@
+include *.txt _templates/* _templates/config/* _templates/config/pdf/*
+

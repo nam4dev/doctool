@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <title>Search &mdash; {{ master_title }} ({{ VERSION }})</title>
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-3.3.7/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-3.3.7/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <style>
+        body {
+            padding-top: 0;
+        }
+        h4.panel-title {
+            font-size: 13px;
+            font-weight: bolder;
+        }
+        .nav > li > a:active {
+            background-color: #eee;
+            text-decoration: none;
+        }
+        .doctool-current {
+            background-color: #b9def0;
+            text-decoration: none;
+        }
+        #doctool-search {
+            position: relative;
+            background-color: #b9def0;
+            padding: 1em;
+            width: 33%;
+            -webkit-border-radius: 1em;
+            -moz-border-radius: 1em;
+            border-radius: 1em;
+        }
+        #panel {
+            position: fixed;
+            overflow: auto;
+        }
+        #panel {
+            right: .5em;
+        }
+        .iframe-frame {
+            border: none;
+            padding: 0;
+            margin: 0 auto;
+        }
+        .spacer {
+            position: relative;
+            height: 30px;
+            min-height: 30px;
+            max-height: 30px;
+            margin: 0 auto;
+            padding: 0;
+        }
+        .row.doctool {
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            margin-bottom: calc(4rem + 60px);
+        }
+
+        footer.footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 60px;
+            padding-top: 4rem;
+            padding-bottom: 4rem;
+            background: #fbfbfb;
+        }
+
+        footer.footer .versions {
+            bottom: 2rem;
+            margin: 0 2rem !important;
+        }
+    </style>
+
+</head>
+<body>
+<nav id="doctool-projects-navigation" class="navbar navbar-default navbar-static-top" role="navigation">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <a class="navbar-brand"
+               href="{% if home_project %}{{ VERSION }}/{{ home_project.first_link|e }}{% else %}#{% endif %}">
+                <i class="glyphicon glyphicon-{{ HOME_ICON | default("home") }}"></i> {{ TITLE }}
+            </a>
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                {% if home_project and home_project.nav %}
+                    <li {% if home_project.name == current_project_name %}class="active"{% endif %}>
+                        <a href="{{ VERSION }}/{{ home_project.first_link|e }}" >
+                            {% if home_project.icon %}<i class="{{ home_project.icon }}"></i>{% endif %} {{ home_project.name }}
+                        </a>
+                    </li>
+                {% endif %}
+                {% if doc_projects %}
+                    {%- for project in doc_projects %}
+                        <li>
+                            <a href="/{{ VERSION }}/{{ project.first_link|e }}" >
+                                {% if project.icon %}<i class="{{ project.icon }}"></i>{% endif %} {{ project.name }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                {% endif %}
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                {% if ISSUE_TRACKER_URI %}
+                    <a href="{{ ISSUE_TRACKER_URI }}" target="_blank" type="button" class="btn btn-warning navbar-btn">
+                        <i class="glyphicon glyphicon-bullhorn"></i> {{ ISSUE_TRACKER_TEXT | default("Issue Tracker") }}
+                    </a>
+                {% endif %}
+            </ul>
+
+            <form id="doctool-search-form" class="navbar-form navbar-right" role="search" action="search.html" method="get">
+                <div class="form-group">
+
+                    <div class="btn-group">
+                        {% if (doc_projects and doc_projects|length > 1) or (api_doc_projects and api_doc_projects|length > 1) or (doc_projects and api_doc_projects)  %}
+                            <button id="doctool-search-text-box" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                All Projects <i class="glyphicon glyphicon-filter"></i>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#" data-target="{{ VERSION }}/search.html" class="active">All Projects</a></li>
+                                {% if doc_projects %}
+                                    <li class="divider"></li>
+                                    {%- for project in doc_projects %}
+                                        {% if project.search %}
+                                            <li>
+                                                <a href="#" data-target="{{ VERSION }}/{{ project.id }}/search.html">
+                                                    {% if project.icon %}<i class="{{ project.icon }}"></i>{% endif %} {{ project.name }}
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                                {% if api_doc_projects %}
+                                    {% if doc_projects %}<li class="divider"></li>{% endif %}
+                                    {%- for project in api_doc_projects %}
+                                        {% if project.search %}
+                                            <li>
+                                                <a href="#" data-target="{{ VERSION }}/{{ project.id }}/search.html">
+                                                    {% if project.icon %}<i class="{{ project.icon }}"></i>{% endif %} {{ project.name }}
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+                        {% else %}
+                            <button id="doctool-search-text-box" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                {{current_project_name}} <i class="glyphicon glyphicon-filter"></i>
+                            </button>
+                        {% endif %}
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    <input type="text" name="q" class="form-control" placeholder="Search" />
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-info" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                </div>
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+            </form>
+
+            <ul class="nav navbar-nav navbar-right">
+
+                {% if api_doc_projects %}
+                    {% if api_doc_projects|length > 1 %}
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                API References <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu" role="menu">
+                                {%- for project in api_doc_projects %}
+                                    <li {% if project.name == current_project_name %}class="active"{% endif %}>
+                                        <a href="{{ VERSION }}/{{ project.first_link|e }}" >
+                                            {% if project.icon %}<i class="{{ project.icon }}"></i>{% endif %} {{ project.name }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% else %}
+                        {%- for project in api_doc_projects %}
+                            <li {% if project.name == current_project_name %}class="active"{% endif %}>
+                                <a href="{{ VERSION }}/{{ project.first_link|e }}" >
+                                    {% if project.icon %}<i class="{{ project.icon }}"></i>{% endif %} {{ project.name }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    {% endif %}
+                {% endif %}
+            </ul>
+
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+
+<div class="row doctool">
+
+    <div class="col-md-10 container">
+        <div id="content">
+            <div>
+                <h1 id="search-documentation">Search</h1>
+                <div id="fallback" class="admonition warning">
+                    <script type="text/javascript">$('#fallback').hide();</script>
+                    <p>
+                        Please activate JavaScript to enable the search
+                        functionality.
+                    </p>
+                </div>
+                <div class="alert alert-info" role="alert">
+                    <p>
+                        From here you can search these documents.
+                        Enter your search words into the box above and click "search".
+                    </p>
+                    <p>
+                        Note that the search function will automatically search for all of the words.
+                        Pages containing fewer words won't appear in the result list.
+                    </p>
+                </div>
+
+                <div id="search-results">
+                    {% if doc_projects %}
+                        {%- for project in doc_projects %}
+                            {% if project.search %}
+                                <div>
+                                    <h2 class="alert alert-success" id="head-{{ project.id }}">Found in <strong>{{ project.name }}</strong> Project</h2>
+                                    <img id="{{ project.id }}-loader" src="_static/file.png" class="loaders pull-right">
+                                    <iframe id="{{ project.id }}"
+                                            class="iframe-frame center-block"
+                                            src="{{ project.id }}/search.html?mode=search"
+                                            scrolling="no" frameborder="0" width="100%" marginheight="0" marginwidth="0" height="100%"></iframe>
+                                    <div class="spacer"></div>
+                                </div>
+                                <div class="clearfix"></div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    {% if api_doc_projects %}
+                        {%- for project in api_doc_projects %}
+                            {% if project.search %}
+                                <div>
+                                    <h2 class="alert alert-success" id="head-{{ project.id }}">Found in <strong>{{ project.name }}</strong> Project</h2>
+                                    <img id="{{ project.id }}-loader" src="_static/file.png" class="loaders pull-right">
+                                    <iframe id="{{ project.id }}"
+                                            style="position: relative; height: 100%; width: 100%;"
+                                            class="iframe-frame center-block"
+                                            src="{{ project.id }}/search.html?mode=search"
+                                            scrolling="no" frameborder="0" width="100%" marginheight="0" marginwidth="0" height="100%"></iframe>
+                                    <div class="spacer"></div>
+                                </div>
+                                <div class="clearfix"></div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="panel" class="col-md-2 panel-group panel-info">
+        <div class="panel-heading">
+            <h3 class="panel-title">IN THIS DOCUMENT</h3>
+        </div>
+        <div class="panel-body">
+            <ul class="nav navbar-nav">
+                {% if doc_projects %}
+                    {%- for project in doc_projects %}
+                        {% if project.search %}
+                            <li>
+                                <a href="#head-{{ project.id }}" >
+                                    {% if project.icon %}<i class="{{ project.icon }}"></i>{% endif %} {{ project.name }}
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                {% if api_doc_projects %}
+                    {%- for project in api_doc_projects %}
+                        {% if project.search %}
+                            <li>
+                                <a href="#head-{{ project.id }}" >
+                                    {% if project.icon %}<i class="{{ project.icon }}"></i>{% endif %} {{ project.name }}
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </ul>
+        </div>
+        <div class="panel-footer">
+            <a href="#">Back to Top</a>
+        </div>
+    </div>
+
+</div>
+
+<footer class="footer">
+    <div id="doctool-versions" class="btn-group dropup pull-right versions">
+        <button type="button" class="btn btn-secondary btn-lg dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{ VERSION }}
+            <span class="caret"></span>
+        </button>
+        <ul id="doctool-available-versions" class="dropdown-menu">
+        </ul>
+    </div>
+</footer>
+
+<script>
+    (function () {
+        function loadScripts(array, callback){
+            var loader = function(src, handler){
+                var script = document.createElement("script");
+                script.src = src;
+                script.onload = script.onreadystatechange = function(){
+                    script.onreadystatechange = script.onload = null;
+                    handler();
+                };
+                var head = document.getElementsByTagName("head")[0];
+                (head || document.body).appendChild( script );
+            };
+            (function run(){
+                if(array.length !== 0){
+                    loader(array.shift(), run);
+                }else{
+                    callback && callback();
+                }
+            })();
+        }
+        var version = '{{ VERSION }}';
+        var documentationBaseURI = (window.location + '').split(version)[0];
+        var versionBaseURI = documentationBaseURI + version + '/';
+
+        var scripts = [
+            documentationBaseURI + 'doctool-versions.js',
+            versionBaseURI + 'doctool-settings.js',
+            versionBaseURI + 'doctool-common.js',
+            versionBaseURI + 'doctool-search.js'
+        ];
+
+        loadScripts(scripts, function () {
+            console.log('All scripts loaded')
+        });
+    })();
+</script>
+</body>
+</html>

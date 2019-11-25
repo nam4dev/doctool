@@ -1,0 +1,6 @@
+lxml
+sphinx
+requests
+unidecode
+sphinxcontrib_plantuml
+sphinx_bootstrap_theme

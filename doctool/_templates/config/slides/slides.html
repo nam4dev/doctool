@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html class="no-js">
+  <head>
+    <title>{{ title }}</title>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <script type="text/javascript">(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)</script>
+    <link href="slides/stylesheets/screen.css" type="text/css" rel="stylesheet" media="Screen,projection" />
+  </head>
+  <body>
+    <div id="header">
+      <div class="container">
+        <h1>{{ title }}</h1>
+      </div>
+    </div>
+
+    <div id="content">
+      <div id="slides">
+
+          {% for slide in slides %}
+              <div class="slide">
+                  <h2>{{ slide.title }}</h2>
+                  <p>{{ slide.legend }}</p>
+
+                  {{ slide.content }}
+
+              </div>
+          {% endfor %}
+
+      </div>
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        &copy; {{ ORGANISATION }} {{ date }}
+      </div>
+    </div>
+    <script type="text/javascript" src="slides/scripts/jquery.js"></script>
+    <script type="text/javascript" src="slides/scripts/jquery.presentation.js"></script>
+    <script type="text/javascript" src="slides/scripts/global.js"></script>
+  </body>
+</html>
