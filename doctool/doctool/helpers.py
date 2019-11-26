@@ -128,11 +128,12 @@ def exception(func):
         try:
             func(*args, **kwargs)
             status = True
-        except errors.SysErrors:
-            logger.exception(
+        except errors.SysErrors as error:
+            logger.error(
                 'Error while calling `{}` '
                 'with args: {} & kwargs: {}'.format(func.__name__, args, kwargs)
             )
+            logger.error('Exception => {}'.format(str(error)))
         return status
     return wrapped
 
