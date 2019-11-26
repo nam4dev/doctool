@@ -129,7 +129,10 @@ def exception(func):
             func(*args, **kwargs)
             status = True
         except errors.SysErrors:
-            pass
+            logger.exception(
+                'Error while calling `{}` '
+                'with args: {} & kwargs: {}'.format(func.__name__, args, kwargs)
+            )
         return status
     return wrapped
 
@@ -208,7 +211,7 @@ class ProjectHelper(object):
         try:
             shutil.copystat(src, dst)
         except OSError as why:
-            if shutil.WindowsError is not None and isinstance(why, shutil.WindowsError):
+            if hasattr(shutil, 'WindowsError') and isinstance(why, shutil.WindowsError):
                 # Copying file access times may fail on Windows
                 pass
             else:
@@ -448,12 +451,9 @@ class ProjectHelper(object):
         status = False
         if not os.path.exists(directory_path):
             makedirs = exception(os.makedirs)
-            status = makedirs(directory_path)
+            status = makedirs(directory_path, exist_ok=True)
             if status:
-                output = ('CREATING DIRECTORY => ``{0}`` ...'.format(directory_path))
-            else:
-                output = traceback.format_exc()
-            logger.debug(output)
+                logger.debug('CREATING DIRECTORY => ``{0}`` ...'.format(directory_path))
         return status
 
     @classmethod

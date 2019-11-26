@@ -194,7 +194,7 @@ class ReleasesDirective(Directive):
                     raise self.error('{} is not a valid JSON file ({})'.format(uri, e))
         except (FileNotFoundError, OSError):
             try:
-                response = requests.get(uri)
+                response = requests.get(uri, verify=False)
                 releases_info = response.json()
             except requests.exceptions.RequestException as error:
                 raise self.error('Could not reach URI %s (%s)' % (uri, str(error)))

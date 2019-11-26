@@ -87,6 +87,7 @@ def setup(app, **options):
     """
     app.connect('autodoc-process-docstring', fix_docstring)
     app.connect('autodoc-process-docstring', cut_lines(25, what=['module']))
-    app.add_description_unit('confval', 'confval',
-                             objname='configuration value',
-                             indextemplate='pair: %s; configuration value')
+    # FIXME: add_description_unit is deprecated
+    # app.add_description_unit('confval', 'confval',
+    #                          objname='configuration value',
+    #                          indextemplate='pair: %s; configuration value')
