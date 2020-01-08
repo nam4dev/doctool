@@ -17,9 +17,10 @@ Assuming virtual environment is already created at **~/virtualenv/documentation*
 source ~/virtualenv/documentation/bin/activate
 
 git clone https://github.com/nam4dev/doctool.git
-cd doctool/doctool/doctool
+cd doctool
 
-python main.py --help
+python setup.py install
+doctool --help
 ```
 
 ## Global doctool_settings.json file
@@ -330,9 +331,8 @@ In order to generate one's bundle of documentation projects, type in a shell,
 
 ```bash
 source ~/virtualenv/documentation/bin/activate
-cd doctool/doctool/doctool
 
-python main.py -v ${VERSION} -c "~/documentation/doctool_settings.json" -b developer_doc api_doc
+doctool -v ${VERSION} -c "~/documentation/doctool_settings.json" -b developer_doc api_doc
 ```
 
 Assuming one already create,
@@ -355,9 +355,9 @@ Assuming one already create,
 ```bash
 git clone git+https://github.com/nam4dev/doctool.git
 
-cd doctool
 source ~/virtualenv/documentation/bin/activate
-pip install -r requirements.txt
+
+pip install -r doctool/requirements.txt
 
 cd test
 python runner.py

@@ -108,21 +108,8 @@
             return searchHandler($(this), self);
         };
         DoctoolApp.prototype.localTocHandler = function(e) {
-            var tocItemsClasses = [];
             if(self.localTocObject.find('li').length <= 1) {
                 self.localTocObject.remove();
-            }
-            else {
-                var tocItemsList = self.localTocObject.find('ul');
-                for(var i=0; i<tocItemsClasses.length; i++) {
-                    var cls = tocItemsClasses[i];
-                    tocItemsList.each(function(index) {
-                        var item = $(this);
-                        if(!item.hasClass(cls)) {
-                            item.addClass(cls);
-                        }
-                    });
-                }
             }
         };
         DoctoolApp.prototype.leftTocHandler = function(e) {
@@ -289,6 +276,9 @@
             $(self.localToc + ', ' + self.projectToc).css('top', scrollTop);
         };
         DoctoolApp.prototype.MenuHeightHandler = function(e) {
+            // footer : 60px
+            // margins : 25px
+            var offset = 60 + 25;
             var winH = $(window).height(),
                 navH = $(self.navigationToc).height(),
 
@@ -296,13 +286,13 @@
                 rightPanelHeadingH = $(self.localToc).find('.panel-heading').height(),
                 rightPanelFooterH = $(self.localToc).find('.panel-footer').height(),
 
-                rightH = winH - (navH + rightPanelHeadingH + rightPanelFooterH + 25),
+                rightH = winH - (navH + rightPanelHeadingH + rightPanelFooterH + offset),
 
                 leftPanel = $(self.projectToc).find('.panel-body').first(),
                 leftPanelHeadingH = $(self.projectToc).find('.panel-heading').height(),
                 leftPanelFooterH = $(self.projectToc).find('.panel-footer').height(),
 
-                leftH = winH - (navH + leftPanelHeadingH + leftPanelFooterH + 25);
+                leftH = winH - (navH + leftPanelHeadingH + leftPanelFooterH + offset);
 
             console.log('Window Height : ' + winH +
                 ' Nav Height : ' + navH +

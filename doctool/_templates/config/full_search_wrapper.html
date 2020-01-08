@@ -30,6 +30,11 @@
             font-size: 13px;
             font-weight: bolder;
         }
+
+        #document-toc ul {
+            padding-left: 1em;
+        }
+
         .nav > li > a:active {
             background-color: #eee;
             text-decoration: none;
@@ -284,7 +289,7 @@
         <div class="panel-heading">
             <h3 class="panel-title">IN THIS DOCUMENT</h3>
         </div>
-        <div class="panel-body">
+        <div id="document-toc" class="panel-body">
             <ul class="nav navbar-nav">
                 {% if doc_projects %}
                     {%- for project in doc_projects %}

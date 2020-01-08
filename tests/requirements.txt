@@ -1,1 +1,0 @@
-git+https://github.com/nam4dev/doctool.git

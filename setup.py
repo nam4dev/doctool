@@ -34,22 +34,46 @@ SOFTWARE.
 .. important:: When installed, a command-line alias, named **doctool** is created !
     Therefore calling simply **doctool** is enough.
 """
+import os
+import sys
+
 from distutils.core import setup
 from setuptools import find_packages
 
-import doctool
+__ROOTDIR__ = os.path.dirname(
+    os.path.abspath(__file__)
+)
+DOCTOOL_ROOTDIR = __ROOTDIR__
+sys.path.insert(0, DOCTOOL_ROOTDIR)
+
+__version__ = '0.9.2.0'
+__author_email__ = 'namat4css@gmail.com'
+__description__ = """\
+Doctool is written in python overlaying Sphinx \
+to enable multiple Sphinx projects to be aggregated into a single web application.
+Multiple versions can be easily handled as well by this tool.
+Doctool is able to automatically handle one's code source, in order to generate API documentation."""
+
+with open(os.path.join(__ROOTDIR__, 'requirements.txt')) as fd:
+    __requires__ = [req.strip() for req in fd.readlines() if req]
+
+with open(os.path.join(__ROOTDIR__, 'README.md')) as fd:
+    __long_description__ = fd.read()
+
+__url__ = 'https://github.com/nam4dev/doctool'
 
 
 setup(
-    name=doctool.__name__,
-    version=doctool.__version__,
+    name='doctool',
+    version=__version__,
     packages=find_packages(),
-    url=doctool.__url__,
-    license=doctool.__copyright__,
-    author=doctool.__author__,
-    author_email=doctool.__author_email__,
-    description=doctool.__description__,
-    requires=doctool.__requires__,
+    url=__url__,
+    license=__copyright__,
+    author=__author__,
+    author_email=__author_email__,
+    description=__description__,
+    long_description=__long_description__,
+    requires=__requires__,
     entry_points={
         'console_scripts': [
             'doctool = doctool.main:main'

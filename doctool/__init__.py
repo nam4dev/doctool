@@ -30,17 +30,3 @@ SOFTWARE.
 
 .. note:: those values are used by the `setup.py` file.
 """
-import os
-
-__version__ = '0.9.1.0'
-__author_email__ = 'namat4css@gmail.com'
-__description__ = """\
-Doctool is written in python overlaying Sphinx to enable multiple Sphinx projects to be aggregated into a single web application.
-Multiple versions can be easily handled as well by this tool.
-Doctool is able to automatically handle one's code source, in order to generate API documentation."""
-
-dirname = os.path.dirname(os.path.abspath(__file__))
-with open(os.path.abspath(os.path.join(dirname, '..', 'requirements.txt'))) as fd:
-    __requires__ = [req.strip() for req in fd.readlines() if req]
-
-__url__ = 'https://github.com/nam4dev/doctool'

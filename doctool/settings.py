@@ -69,7 +69,7 @@ IS_WINDOWS = sys.platform == 'win32'
 LOGICAL_JAVA_BIN_PATH = r'C:/windows/system32/java.exe' if IS_WINDOWS else '/usr/bin/java'
 
 DOCTOOL_ROOTDIR = absjoin(__ROOTDIR__, '..')
-TEMPLATES_DIR = absjoin(DOCTOOL_ROOTDIR, '_templates')
+TEMPLATES_DIR = absjoin(__ROOTDIR__, '_templates')
 
 DEFAULT_HOST = '(127.0.0.1|localhost)'
 DEFAULT_VERSION = '0.0.0.0'

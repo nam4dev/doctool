@@ -23,6 +23,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 import os
+import sys
 import unittest
 
 DIR = os.path.dirname(os.path.abspath(__file__))
@@ -37,4 +38,7 @@ def load_tests(loader, standard_tests, pattern):
 
 
 if __name__ == '__main__':
+    # Insert doctool source root
+    sys.path.insert(0, os.path.join(DIR, '..'))
+
     unittest.main()

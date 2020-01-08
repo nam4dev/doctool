@@ -679,7 +679,7 @@ class TemplateManager(object):
         """
         if not TemplateManager.engine:
             assert (templates_directory and
-                    os.path.isdir(templates_directory)), "Your Templates directory is invalid!"
+                    os.path.isdir(templates_directory)), "Templates directory is invalid! (%s)" % templates_directory
             cls.loader = jinja2.FileSystemLoader(templates_directory)
             cls.engine = jinja2.Environment(loader=cls.loader, extensions=[])
 
