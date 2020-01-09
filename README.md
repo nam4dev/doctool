@@ -368,6 +368,9 @@ Assuming one already create,
  - its Documentation projects into **~/documentation**
  - its doctool_settings.json global configuration file referencing **developer_doc** & **api_doc** project's ID
  
+ ### Debugging
+ 
+ All Sphinx outputs are written into a log file located at ~/doctool.log (HOME directory)
  
  ## Contributing
  
