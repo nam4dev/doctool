@@ -66,8 +66,10 @@ append_sys_paths(DOCTOOL_ROOTDIR)
 # Here, goes all Core Framework imports
 from doctool import settings
 from doctool.roles import jira
+from doctool.roles import downloads as downloads_roles
 from doctool.directives import epydoc
 from doctool.directives import releases
+from doctool.directives import downloads
 from doctool.helpers import ProjectHelper as Helper
 
 {% if not javasphinx %}
@@ -134,9 +136,11 @@ def setup(app):
 
     epydoc.setup(app, projects_paths=paths)
     releases.setup(app, projects_paths=paths)
+    downloads.setup(app, projects_paths=paths)
 
     app.add_role('jira_issue', jira.issue_role)
     app.add_role('jira_story', jira.story_role)
+    app.add_role('download-inline', downloads_roles.download_inline_role)
 
     app.add_config_value('jira_project_url', None, 'env')
 
@@ -481,7 +485,10 @@ html_favicon = r'{{theme.html_favicon}}'
 # Add any paths that contain custom _static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin _static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = [r'{{html_static_path}}']
+html_static_path = [r'_static']
+{% for static_path in html_static_paths %}
+html_static_path.append(r'{{ static_path }}')
+{% endfor %}
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.

@@ -178,6 +178,8 @@ class PartialProject(IProject):
                 logger.warning('Extra sys path %s does not exist!', path)
 
         self._extra_paths = extra_paths
+        # The Project's HTML static paths to be appended to the `html_static_path` var in the conf.py file
+        self._html_static_paths = self._configuration.get('html_static_paths') or []
         # The Project's metadata (theme, title, copyright, ...
         self._metadata = self._configuration.metadata
         # The Project's Type
@@ -319,6 +321,17 @@ class PartialProject(IProject):
         return self._extra_paths
 
     @property
+    def html_static_paths(self):
+        """
+        Holds the Project's HTML static Paths
+        to be appended to the `html_static_path` var in the conf.py file
+
+        :rtype: list
+        :return: the project's HTML static Paths
+        """
+        return self._html_static_paths
+
+    @property
     def metadata(self):
         """
         Holds the project's Metadata
@@ -399,6 +412,7 @@ class PartialProject(IProject):
             source_dir=self.src_dirname,
             output_format=self._output_format,
             extra_paths=self.extra_paths,
+            html_static_paths=self.html_static_paths,
             metadata=self.metadata,
             theme=self.theme
         )

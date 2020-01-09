@@ -43,8 +43,8 @@ def role_base(name, rawtext, text, lineno, inliner, options=None, content=None, 
     """Link to a JIRA issue.
 
     Returns 2 part tuple containing list of nodes to insert into the
-    document and a list of system messages.  Both are allowed to be
-    empty.
+    document and a list of system messages.
+    Both are allowed to be empty.
 
     :param role_type: The role type
     :param name: The role name used in the document.
@@ -76,8 +76,8 @@ def issue_role(name, rawtext, text, lineno, inliner, options=None, content=None)
     """Link to a JIRA issue.
 
     Returns 2 part tuple containing list of nodes to insert into the
-    document and a list of system messages.  Both are allowed to be
-    empty.
+    document and a list of system messages.
+    Both are allowed to be empty.
 
     :param name: The role name used in the document.
     :param rawtext: The entire markup snippet, with role.
@@ -95,8 +95,8 @@ def story_role(name, rawtext, text, lineno, inliner, options=None, content=None)
     """Link to a JIRA issue.
 
     Returns 2 part tuple containing list of nodes to insert into the
-    document and a list of system messages.  Both are allowed to be
-    empty.
+    document and a list of system messages.
+    Both are allowed to be empty.
 
     :param name: The role name used in the document.
     :param rawtext: The entire markup snippet, with role.

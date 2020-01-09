@@ -16,10 +16,8 @@ Assuming virtual environment is already created at **~/virtualenv/documentation*
 ```bash
 source ~/virtualenv/documentation/bin/activate
 
-git clone https://github.com/nam4dev/doctool.git
-cd doctool
+pip install git+https://github.com/nam4dev/doctool.git
 
-python setup.py install
 doctool --help
 ```
 
@@ -120,7 +118,8 @@ For example in the directory ./doc/user_doc add a file named doctool_settings.js
     },
     "extra_sys_paths": [
         "./program/src"
-    ]
+    ],
+    "html_static_paths": []
 }
 ```
 
@@ -140,6 +139,7 @@ For example in the directory ./doc/user_doc add a file named doctool_settings.js
 | excluded_modules   | Any python module to be excluded from API generation (`api` shall be set to 1)                         |
 | extra_sys_paths    | Any path to be added to the PYTHON sys.path module                                                     |
 | api_options        | Any API option (ie. `members`, `undoc-members`, `show-inheritance`, ...)                               |
+| html_static_paths  | A list of HTML static paths (_static folder is added by default)                                       |
 
 ## Doctool Command Line options
 
@@ -196,6 +196,34 @@ In our example, it would generate,
 
 ```html
 <a href="https://jira.com/browse/TICKET-ID">JIRA Story TICKET-ID</a>
+```
+
+### Download Inline Role
+
+```rest
+:download-inline:`uri,text`
+```
+
+This will produce a link which will produce a JS Link to ensure the binary file opens properly on a click
+In our example, it would generate,
+
+```html
+<a href="javascript:download_file('uri', 'text')">text</a>
+```
+
+### Download Inline Directive
+
+```rest
+.. download-inline:: uri
+
+    text
+```
+
+This will produce a link which will produce a JS Link to ensure the binary file opens properly on a click
+In our example, it would generate,
+
+```html
+<a href="javascript:download_file('uri', 'text')">text</a>
 ```
 
 ### Releases Directive

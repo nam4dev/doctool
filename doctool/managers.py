@@ -86,7 +86,7 @@ class ProjectManager(IManager):
 
     Your Documentation has been successfully built at : {0}
     You can visualize it by opening this link in your favorite Web browser:
-    <link>{1}</link>
+    {1}
 
     '''
 

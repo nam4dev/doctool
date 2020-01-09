@@ -203,7 +203,7 @@ class ReleasesDirective(Directive):
 
     def _process_rst(self, output):
         """
-        Process an RST output
+        Process RST output
 
         :param output: The output to process
         :type output: str
@@ -228,7 +228,7 @@ class ReleasesDirective(Directive):
 
     def _process_raw(self, output):
         """
-        Process an RAW output
+        Process RAW output
 
         :param output: The output to process
         :type output: str
