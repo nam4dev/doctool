@@ -136,6 +136,12 @@ class PartialProject(IProject):
         # self._configuration = Types.AttributeDict(configuration)
         self._configuration = self.load(configuration)
 
+        # Pre routines are python routines to be executed before running sphinx builder
+        self._pre_routines = self._configuration.get('pre_routines') or []
+
+        # Post routines are python routines to be executed before running sphinx builder
+        self._post_routines = self._configuration.get('post_routines') or []
+
         # The project is the home page and it should appear in the navigation bar)?
         self.nav = self._configuration.get('nav', False)
         # The project is the home page?
@@ -219,6 +225,42 @@ class PartialProject(IProject):
         :rtype: Types.AttributeDict
         """
         return self._configuration
+
+    @property
+    def pre_routines(self):
+        """
+        Property computing pre routine paths
+
+        :return: Computed pre routine paths
+        :rtype: list
+        """
+        pre_routines = []
+        for routine in self._pre_routines:
+            if not os.path.isabs(routine):
+                pre_routines.append(
+                    os.path.abspath(os.path.join(self.src_dirname, routine))
+                )
+            else:
+                pre_routines.append(routine)
+        return pre_routines
+
+    @property
+    def post_routines(self):
+        """
+        Property computing post routine paths
+
+        :return: Computed post routine paths
+        :rtype: list
+        """
+        post_routines = []
+        for routine in self._post_routines:
+            if not os.path.isabs(routine):
+                post_routines.append(
+                    os.path.abspath(os.path.join(self.src_dirname, routine))
+                )
+            else:
+                post_routines.append(routine)
+        return post_routines
 
     @property
     def dryrun(self):

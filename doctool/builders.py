@@ -50,7 +50,7 @@ class BuilderThread(threading.Thread):
         Constructor
 
         :param builder: The builder instance
-        :type builder: IBuilder
+        :type builder: IBuilder or SphinxBuilder
 
         :param project: The project instance
         :type project: doctool.models.RSTProject or doctool.models.CodeProject
@@ -152,6 +152,7 @@ class SphinxBuilder(IBuilder):
         :type build_info: dict
 
         :param helper: ProjectHelper instance
+        :type helper: doctool.helpers.ProjectHelper
         """
         self._manager = manager
         self._extensions_manager = manager.extensions_manager
@@ -172,6 +173,7 @@ class SphinxBuilder(IBuilder):
         Wraps Main Manager Helper instance into a clearer self property if needed
 
         :return: ProjectHelper instance
+        :rtype: doctool.helpers.ProjectHelper
         """
         return self._helper
 
@@ -211,6 +213,22 @@ class SphinxBuilder(IBuilder):
                                                   "subclass of it as build_info parameter!")
         self._build_info = info
 
+    def run_routines(self, routines):
+        """
+        Run project's routines
+
+        :param routines:
+        :type routines: list
+        """
+        for routine in routines:
+            rc = self.helper.run_command('python {}'.format(routine))
+            if rc.failed:
+                logger.error('Routine `{}` issues:'.format(routine))
+                logger.error(rc)
+            else:
+                logger.info('Routine `{}` output:'.format(routine))
+                logger.info(rc)
+
     def run_sphinx(self, **cmd_options):
         """
         Simply calls local command-line execution of
@@ -230,8 +248,6 @@ class SphinxBuilder(IBuilder):
         """
         cmd = (
             r'{python} "{sphinx_exe}" -b {output_format} -a {source_dir} {output_dir} '
-            # r'-D {doctool2sphinx} '
-            # r'-A {doctool2sphinx}'
         )
 
         sphinx_exe = self.helper.get_executable_path('sphinx-build')
@@ -241,7 +257,6 @@ class SphinxBuilder(IBuilder):
         data = dict(
             python=sys.executable,
             sphinx_exe=sphinx_exe,
-            # doctool2sphinx='{0}={1}'.format(self._manager.master_title_slug, cmd_options.get('uid'))
         )
         data.update(cmd_options)
 
@@ -301,11 +316,16 @@ class SphinxBuilder(IBuilder):
         """
         # Getting the project's data
         data = project.data
+        self.run_routines(project.pre_routines)
         # Write the Specification file (conf.py)
         self.write_spec(data.source_dir, data, override=True)
         # Run Doctool Sphinx Engine from command line
-        return self.run_sphinx(**data)
+        status = self.run_sphinx(**data)
+        if status == IBuilder.Status.SUCCESS:
+            self.run_routines(project.post_routines)
+        return status
 
+    # TODO: Not used for now, not functional
     def build_asynchronous(self, projects=None):
         """
         Builds the list of projects asynchronously.
@@ -320,7 +340,6 @@ class SphinxBuilder(IBuilder):
             * IBuilder.Status.FAILURE: -1
             * IBuilder.Status.SUCCESS: 0
         """
-
         projects = projects or []
         has_failed = False
         threads_list = []
