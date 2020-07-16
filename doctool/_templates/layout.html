@@ -1,5 +1,9 @@
 {% extends "!layout.html" %}
 
+{% macro format_nav(item) %}
+    {% if item.islower() %}{{ item.title() }}{% else %}{{ item }}{% endif %}
+{% endmacro %}
+
 {% macro get_project_repr(project) %}
     {% if project.icon %}<i class="{{ project.icon }}"></i>{% endif %} {{ project.name }}
 {% endmacro %}
@@ -237,10 +241,10 @@
                                         <li>
                                         {% if item.link %}
                                             {% set is_current_page = item.link.split(pagename)[-1] == '.html' %}
-                                            <a class="{% if is_current_page %}doctool-current{% endif %}" href="{{ VERSION }}/{{ item.link|e }}">{{ item.name }}</a>
+                                            <a class="{% if is_current_page %}doctool-current{% endif %}" href="{{ VERSION }}/{{ item.link|e }}">{{ format_nav(item.name) }}</a>
                                         {% else %}
                                             <a class="collapsible-menu" data-toggle="collapse" href="#collapse{{ item.hash }}{{ item.name }}">
-                                                <span class="glyphicon {% if item.name in pagename %}glyphicon-menu-down{% else %}glyphicon-menu-right{% endif %}"></span> {{ item.alias.capitalize() }}
+                                                <span class="glyphicon {% if item.name in pagename %}glyphicon-menu-down{% else %}glyphicon-menu-right{% endif %}"></span> {{ format_nav(item.alias) }}
                                             </a>
                                         {% endif %}
                                     {% endif %}
