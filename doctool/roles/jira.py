@@ -116,6 +116,7 @@ def make_link_node(rawtext, app, type_, slug, options):
     :param rawtext: Text being replaced with link node.
     :param app: Sphinx application context
     :param type_: Link type_ (issue, etc.)
+    :type slug: str
     :param slug: ID of the thing to link to
     :param options: Options dictionary passed to role func.
     """
@@ -132,6 +133,8 @@ def make_link_node(rawtext, app, type_, slug, options):
             base += '/'
         ref = base + slug
         set_classes(options)
-        node = nodes.reference(rawtext, 'JIRA {0} {1}'.format(type_.capitalize(), slug), refuri=ref, **options)
+        node = nodes.reference(
+            rawtext, 'JIRA {0} {1}'.format(type_.capitalize(), slug.upper()), refuri=ref, **options
+        )
 
     return node
