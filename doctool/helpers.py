@@ -421,7 +421,7 @@ class ProjectHelper(object):
         if os.path.exists(source) and os.path.isdir(source):
             try:
                 cls.__cptree(source, destination, symlinks=symlinks, ignore=ignore)
-            except (errors.SysErrors, shutil.Error) as exc:
+            except errors.SysErrors + (shutil.Error,) as exc:
                 logger.exception(exc)
 
     @classmethod
@@ -864,7 +864,7 @@ class Types(object):
                             title = str(lines[index + 1]).strip()
                         else:
                             title = str(lines[index - 1]).strip()
-            except (errors.SysErrors, Exception):
+            except errors.SysErrors + (Exception,):
                 logger.debug('Resolving RST file {0} title failed !'.format(rst_file))
                 logger.debug(traceback.format_exc())
 
