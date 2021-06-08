@@ -98,7 +98,7 @@ def run_command(command, shell=None, cwd=".", env=None):
         out.failed = True
         msg = "run_command() encountered an error (return code %s) while executing '%s'" % (rcode, command)
         msg += '\n' + (err if err else out)
-        logger.exception(msg)
+        logger.error(msg)
 
     out.succeeded = not out.failed
 
