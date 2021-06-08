@@ -147,7 +147,7 @@ def setup(app):
     app.connect('doctree-resolved', doctool_doctree)
 
 
-html_show_sourcelink = 0
+html_show_sourcelink = False
 jira_project_url = '{{ JIRA_PROJECT_URI }}'
 
 # Useful to refer to docutils Online documentation
@@ -175,9 +175,11 @@ extensions = [
     # 'sphinx.ext.mathjax',
     'sphinx.ext.ifconfig',
     # 'sphinx.ext.doctest',
-    'sphinx.ext.viewcode',
     'sphinx.ext.graphviz',
 ]
+{% if viewcode %}
+extensions.append('sphinx.ext.viewcode')
+{% endif %}
 # Register the theme as an extension to generate a sitemap.xml
 {% if extends %}
 extensions.append("{{html_theme}}")
