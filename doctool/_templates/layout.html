@@ -1,383 +1,393 @@
 {% extends "!layout.html" %}
 
 {% macro format_nav(item) %}
-    {% if item.islower() %}{{ item.title() }}{% else %}{{ item }}{% endif %}
+{% if item.islower() %}{{ item.title() }}{% else %}{{ item }}{% endif %}
 {% endmacro %}
 
 {% macro get_project_repr(project) %}
-    {% if project.icon %}<i class="{{ project.icon }}"></i>{% endif %} {{ project.name }}
+{% if project.icon %}<i class="{{ project.icon }}"></i>{% endif %} {{ project.name }}
 {% endmacro %}
 
 {% macro col_md(project) %}
-    {% set menu=project.menu %}
-    {% if menu.right and menu.left %}
-        col-md-8 col-md-offset-2
-    {% elif project.layout == '3-columns' %}
-        col-md-8
-    {% elif menu.left or project.layout == '2-columns-left' %}
-        col-md-10 col-md-offset-2
-    {% elif menu.right or project.layout == '2-columns-right' %}
-        col-md-10
-    {% else %}
-        col-md-12
-    {% endif %}
+{% set menu=project.menu %}
+{% if menu.right and menu.left %}
+col-md-8 col-md-offset-2
+{% elif project.layout == '3-columns' %}
+col-md-8
+{% elif menu.left or project.layout == '2-columns-left' %}
+col-md-10 col-md-offset-2
+{% elif menu.right or project.layout == '2-columns-right' %}
+col-md-10
+{% else %}
+col-md-12
+{% endif %}
 {% endmacro %}
 
 {%- block extrahead %}
-    <base target="_parent" />
-    {{ super() }}
-    <style>
-        body {
-            padding-top: 0;
-        }
-        h4.panel-title {
-            font-size: 13px;
-            font-weight: bolder;
-        }
 
-        #document-toc ul {
-            padding-left: 1em;
-        }
+<base target="_parent" />
+<!-- FIXME: disable super() call to remove jquery-fix as it breaks bootstrap execution - Don't know why -->
+<!--{{ super() }}-->
+<style>
+    body {
+        padding-top: 0;
+    }
+    h4.panel-title {
+        font-size: 13px;
+        font-weight: bolder;
+    }
 
-        .nav > li > a:active {
-            background-color: #eee;
-            text-decoration: none;
-        }
-        .doctool-current {
-            background-color: #b9def0;
-            text-decoration: none;
-        }
-        #doctool-search {
-            position: relative;
-            background-color: #b9def0;
-            padding: 1em;
-            width: 33%;
-            -webkit-border-radius: 1em;
-            -moz-border-radius: 1em;
-            border-radius: 1em;
-        }
-        #panel, #accordion {
-            position: fixed;
-            background: white;
-            z-index: 1;
-        }
-        #panel {
-            right: .5em;
-        }
+    #document-toc ul {
+        padding-left: 1em;
+    }
 
-        .row.doctool {
-            margin-left: 0 !important;
-            margin-right: 0 !important;
-            margin-bottom: calc(4rem + 60px);
-        }
+    .nav > li > a:active {
+        background-color: #eee;
+        text-decoration: none;
+    }
+    .doctool-current {
+        background-color: #b9def0;
+        text-decoration: none;
+    }
+    #doctool-search {
+        position: relative;
+        background-color: #b9def0;
+        padding: 1em;
+        width: 33%;
+        -webkit-border-radius: 1em;
+        -moz-border-radius: 1em;
+        border-radius: 1em;
+    }
+    #panel, #accordion {
+        position: fixed;
+        background: white;
+        z-index: 1;
+    }
+    #panel {
+        right: .5em;
+    }
 
-        footer.footer {
-            position: fixed;
-            z-index: 2;
-            left: 0;
-            bottom: 0;
-            width: 100%;
-            height: 60px;
-            padding-top: 4rem;
-            padding-bottom: 4rem;
-            background: #fbfbfb;
-        }
+    .row.doctool {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        margin-bottom: calc(4rem + 60px);
+    }
 
-        footer.footer .versions {
-            bottom: 2rem;
-            margin: 0 2rem !important;
-        }
-    </style>
+    footer.footer {
+        position: fixed;
+        z-index: 2;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 60px;
+        padding-top: 4rem;
+        padding-bottom: 4rem;
+        background: #fbfbfb;
+    }
+
+    footer.footer .versions {
+        bottom: 2rem;
+        margin: 0 2rem !important;
+    }
+</style>
 {%- endblock %}
 {%- block content %}
-    <nav id="doctool-projects-navigation" class="navbar navbar-default navbar-static-top" role="navigation">
-        <div class="container-fluid">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <a id="project-toc-menu"
-                   class="navbar-brand"
-                   href="{% if home_project %}{{ VERSION }}/{{ home_project.first_link|e }}{% else %}#{% endif %}">
-                    <i class="glyphicon glyphicon-{{ HOME_ICON | default("home") }}"></i> {{ TITLE }}
+<nav id="doctool-projects-navigation" class="navbar navbar-default navbar-static-top" role="navigation">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <a id="project-toc-menu"
+               class="navbar-brand"
+               href="{% if home_project %}{{ VERSION }}/{{ home_project.first_link|e }}{% else %}#{% endif %}">
+                <i class="glyphicon glyphicon-{{ HOME_ICON | default("home") }}"></i> {{ TITLE }}
+            </a>
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                {% if home_project and home_project.nav %}
+                <li {% if home_project.name == current_project_name %}class="active"{% endif %}>
+                    <a href="{{ VERSION }}/{{ home_project.first_link|e }}" >
+                        {{ get_project_repr(home_project) }}
+                    </a>
+                </li>
+                {% endif %}
+                {% if doc_projects %}
+                {%- for project in doc_projects %}
+                <li {% if project.name == current_project_name %}class="active"{% endif %}>
+                    <a href="{{ VERSION }}/{{ project.first_link|e }}" >
+                        {{ get_project_repr(project) }}
+                    </a>
+                </li>
+                {% endfor %}
+                {% endif %}
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                {% if ISSUE_TRACKER_URI %}
+                <a href="{{ ISSUE_TRACKER_URI }}" target="_blank" type="button" class="btn btn-warning navbar-btn">
+                    <i class="glyphicon glyphicon-bullhorn"></i> {{ ISSUE_TRACKER_TEXT | default("Issue Tracker") }}
                 </a>
-            </div>
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse">
-                <ul class="nav navbar-nav">
-                    {% if home_project and home_project.nav %}
-                        <li {% if home_project.name == current_project_name %}class="active"{% endif %}>
-                            <a href="{{ VERSION }}/{{ home_project.first_link|e }}" >
-                                {{ get_project_repr(home_project) }}
-                            </a>
-                        </li>
-                    {% endif %}
-                    {% if doc_projects %}
-                        {%- for project in doc_projects %}
+                {% endif %}
+            </ul>
+
+            {% if searchable_projects|length >= 1 %}
+            {% set all_projects=searchable_projects|length > 1 %}
+            <form id="doctool-search-form" class="navbar-form navbar-right" role="search" action="{{ pathto('search') }}" method="get">
+                <div class="form-group">
+
+                    <div class="btn-group">
+                        <button id="doctool-search-text-box" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            {% if all_projects %}
+                            All Projects
+                            {% elif searchable_projects|length == 1 %}
+                            {{ get_project_repr(searchable_projects[0]) }}
+                            {% else %}
+                            {{ get_project_repr(current_project) }}
+                            {% endif %} <i class="glyphicon glyphicon-filter"></i>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            {% if all_projects %}
                             <li {% if project.name == current_project_name %}class="active"{% endif %}>
-                                <a href="{{ VERSION }}/{{ project.first_link|e }}" >
+                                <a id="all-projects-link" href="#" data-target="{{ VERSION }}/search.html">All Projects</a>
+                            </li>
+                            {% endif %}
+
+                            {% if doc_projects %}
+                            {% if all_projects %}<li class="divider"></li>{% endif %}
+                            {%- for project in doc_projects %}
+                            {% if project.search %}
+                            <li {% if project.name == current_project_name %}class="active"{% endif %} >
+                                <a href="#" data-target="{{ VERSION }}/{{project.id}}/search.html">
                                     {{ get_project_repr(project) }}
                                 </a>
                             </li>
-                        {% endfor %}
-                    {% endif %}
-                </ul>
-
-                <ul class="nav navbar-nav navbar-right">
-                    {% if ISSUE_TRACKER_URI %}
-                        <a href="{{ ISSUE_TRACKER_URI }}" target="_blank" type="button" class="btn btn-warning navbar-btn">
-                            <i class="glyphicon glyphicon-bullhorn"></i> {{ ISSUE_TRACKER_TEXT | default("Issue Tracker") }}
-                        </a>
-                    {% endif %}
-                </ul>
-
-                {% if searchable_projects|length >= 1 %}
-                    {% set all_projects=searchable_projects|length > 1 %}
-                    <form id="doctool-search-form" class="navbar-form navbar-right" role="search" action="{{ pathto('search') }}" method="get">
-                        <div class="form-group">
-
-                            <div class="btn-group">
-                                <button id="doctool-search-text-box" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                    {% if all_projects %}
-                                        All Projects
-                                    {% elif searchable_projects|length == 1 %}
-                                        {{ get_project_repr(searchable_projects[0]) }}
-                                    {% else %}
-                                        {{ get_project_repr(current_project) }}
-                                    {% endif %} <i class="glyphicon glyphicon-filter"></i>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    {% if all_projects %}
-                                        <li {% if project.name == current_project_name %}class="active"{% endif %}>
-                                            <a id="all-projects-link" href="#" data-target="{{ VERSION }}/search.html">All Projects</a>
-                                        </li>
-                                    {% endif %}
-
-                                    {% if doc_projects %}
-                                        {% if all_projects %}<li class="divider"></li>{% endif %}
-                                        {%- for project in doc_projects %}
-                                            {% if project.search %}
-                                                <li {% if project.name == current_project_name %}class="active"{% endif %} >
-                                                    <a href="#" data-target="{{ VERSION }}/{{project.id}}/search.html">
-                                                        {{ get_project_repr(project) }}
-                                                    </a>
-                                                </li>
-                                            {% endif %}
-                                        {% endfor %}
-                                    {% endif %}
-                                    {% if api_doc_projects %}
-                                        {% if doc_projects %}<li class="divider"></li>{% endif %}
-                                        {%- for project in api_doc_projects %}
-                                            {% if project.search %}
-                                                <li {% if project.name == current_project_name %}class="active"{% endif %} >
-                                                    <a href="#" data-target="{{ VERSION }}/{{project.id}}/search.html">
-                                                        {{ get_project_repr(project) }}
-                                                    </a>
-                                                </li>
-                                            {% endif %}
-                                        {% endfor %}
-                                    {% endif %}
-                                </ul>
-                            </div>
-
-                        </div>
-                        <div class="form-group">
-                            <input type="text" name="q" class="form-control" placeholder="Search" />
-                        </div>
-                        <div class="form-group">
-                            <button class="btn btn-info" type="submit"><i class="glyphicon glyphicon-search"></i></button>
-                        </div>
-                        <input type="hidden" name="check_keywords" value="yes" />
-                        <input type="hidden" name="area" value="default" />
-                    </form>
-                {% endif %}
-
-
-                <ul class="nav navbar-nav navbar-right">
-
-                    {% if api_doc_projects %}
-                        {% if api_doc_projects|length > 1 %}
-                            <li class="dropdown">
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                                    API References <span class="caret"></span>
-                                </a>
-                                <ul class="dropdown-menu" role="menu">
-                                    {%- for project in api_doc_projects %}
-                                        <li {% if project.name == current_project_name %}class="active"{% endif %}>
-                                            <a href="{{ VERSION }}/{{ project.first_link|e }}" >
-                                                {% if project.icon %}<i class="{{ project.icon }}"></i>{% endif %} {{ project.name }}
-                                            </a>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            </li>
-                        {% else %}
-                            {%- for project in api_doc_projects %}
-                                <li {% if project.name == current_project_name %}class="active"{% endif %}>
-                                    <a href="{{ VERSION }}/{{ project.first_link|e }}" >
-                                        {% if project.icon %}<i class="{{ project.icon }}"></i>{% endif %} {{ project.name }}
-                                    </a>
-                                </li>
+                            {% endif %}
                             {% endfor %}
-                        {% endif %}
-                    {% endif %}
-                </ul>
-            </div><!-- /.navbar-collapse -->
-        </div><!-- /.container-fluid -->
-    </nav>
-
-    <div class="row doctool">
-        {% if current_project %}
-            {% if current_project.menu.left %}
-                <div id="accordion" class="col-md-2 panel-group panel-info">
-                    {% if current_project.toctree %}
-                        <div class="panel-heading">
-                            <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse-{{ current_project.slug }}">
-                                    Quick Navigation
+                            {% endif %}
+                            {% if api_doc_projects %}
+                            {% if doc_projects %}<li class="divider"></li>{% endif %}
+                            {%- for project in api_doc_projects %}
+                            {% if project.search %}
+                            <li {% if project.name == current_project_name %}class="active"{% endif %} >
+                                <a href="#" data-target="{{ VERSION }}/{{project.id}}/search.html">
+                                    {{ get_project_repr(project) }}
                                 </a>
-                            </h4>
-                        </div>
-                        <div class="panel-body">
-                            <ul id="menu" class="nav nav-pills nav-stacked" >
-                                {%- for item in current_project.toctree recursive %}
-                                    {% set inner_loop = loop %}
-                                    {% if not item.name.startswith('-') %}
-                                        <li>
-                                        {% if item.link %}
-                                            {% set is_current_page = item.link.split(pagename)[-1] == '.html' %}
-                                            <a class="{% if is_current_page %}doctool-current{% endif %}" href="{{ VERSION }}/{{ item.link|e }}">{{ format_nav(item.name) }}</a>
-                                        {% else %}
-                                            <a class="collapsible-menu" data-toggle="collapse" href="#collapse{{ item.hash }}{{ item.name }}">
-                                                <span class="glyphicon {% if item.name in pagename %}glyphicon-menu-down{% else %}glyphicon-menu-right{% endif %}"></span> {{ format_nav(item.alias) }}
-                                            </a>
-                                        {% endif %}
-                                    {% endif %}
-                                {%- if item.children -%}
-                                    <div id="collapse{{ item.hash }}{{ item.name }}" class="panel-collapse collapse {% if item.name in pagename %}in{% endif %}">
-                                        <div class="panel-body">
-                                            <ul class="nav nav-pills nav-stacked">{{ inner_loop(item.children) }}</ul>
-                                        </div>
-                                    </div>
-                                {%- endif %}
-                                </li>
-                                {%- endfor %}
-                            </ul>
-                        </div>
-                        <div class="panel-footer"></div>
+                            </li>
+                            {% endif %}
+                            {% endfor %}
+                            {% endif %}
+                        </ul>
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    <input type="text" name="q" class="form-control" placeholder="Search" />
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-info" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                </div>
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+            </form>
+            {% endif %}
+
+
+            <ul class="nav navbar-nav navbar-right">
+
+                {% if api_doc_projects %}
+                {% if api_doc_projects|length > 1 %}
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        API References <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" role="menu">
+                        {%- for project in api_doc_projects %}
+                        <li {% if project.name == current_project_name %}class="active"{% endif %}>
+                            <a href="{{ VERSION }}/{{ project.first_link|e }}" >
+                                {% if project.icon %}<i class="{{ project.icon }}"></i>{% endif %} {{ project.name }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                {% else %}
+                {%- for project in api_doc_projects %}
+                <li {% if project.name == current_project_name %}class="active"{% endif %}>
+                    <a href="{{ VERSION }}/{{ project.first_link|e }}" >
+                        {% if project.icon %}<i class="{{ project.icon }}"></i>{% endif %} {{ project.name }}
+                    </a>
+                </li>
+                {% endfor %}
+                {% endif %}
+                {% endif %}
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+
+<div class="row doctool">
+    {% if current_project %}
+    {% if current_project.menu.left %}
+    <div id="accordion" class="col-md-2 panel-group panel-info">
+        {% if current_project.toctree %}
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse-{{ current_project.slug }}">
+                    Quick Navigation
+                </a>
+            </h4>
+        </div>
+        <div class="panel-body">
+            <ul id="menu" class="nav nav-pills nav-stacked" >
+                {%- for item in current_project.toctree recursive %}
+                {% set inner_loop = loop %}
+                {% if not item.name.startswith('-') %}
+                <li>
+                    {% if item.link %}
+                    {% set is_current_page = item.link.split(pagename)[-1] == '.html' %}
+                    <a class="{% if is_current_page %}doctool-current{% endif %}" href="{{ VERSION }}/{{ item.link|e }}">{{ format_nav(item.name) }}</a>
+                    {% else %}
+                    <a class="collapsible-menu" data-toggle="collapse" href="#collapse{{ item.hash }}{{ item.name }}">
+                        <span class="glyphicon {% if item.name in pagename %}glyphicon-menu-down{% else %}glyphicon-menu-right{% endif %}"></span> {{ format_nav(item.alias) }}
+                    </a>
                     {% endif %}
-                </div>
-            {% elif current_project.layout in ('2-columns-left', '3-columns') %}
-                <div class="col-md-2"></div>
-            {% endif %}
+                    {% endif %}
+                    {%- if item.children -%}
+                    <div id="collapse{{ item.hash }}{{ item.name }}" class="panel-collapse collapse {% if item.name in pagename %}in{% endif %}">
+                        <div class="panel-body">
+                            <ul class="nav nav-pills nav-stacked">{{ inner_loop(item.children) }}</ul>
+                        </div>
+                    </div>
+                    {%- endif %}
+                </li>
+                {%- endfor %}
+            </ul>
+        </div>
+        <div class="panel-footer"></div>
         {% endif %}
+    </div>
+    {% elif current_project.layout in ('2-columns-left', '3-columns') %}
+    <div class="col-md-2"></div>
+    {% endif %}
+    {% endif %}
 
-        <div class="{{ col_md(current_project) }} container">
+    <div class="{{ col_md(current_project) }} container">
 
-            <!--[if lte IE 9]>
-    <div class="jumbotron" style="">
-        <h1>Internet Explorer 10+ required !</h1>
-        <div class="center-block">
-            <p><strong>In order to increase Theme Performance and User Experience, <br />we recommend you to choose among one of the three suggestions below :</strong></p>
-            <div class="spacer"></div>
-            <div class="btn-group btn-group-justified">
-                <div class="btn-group">
-                    <a class="btn btn-info btn-lg" role="button" href="http://windows.microsoft.com/fr-fr/internet-explorer/download-ie">
-                        <p class="pull-right">Upgrade Internet Explorer</p>
-                        <img style="width:64px; height:64px;" class="media-object" src="http://clacson.uniroma3.it/file.php/1/IE.png" alt="Upgrade Internet Explorer">
-                    </a>
-                </div>
-                <div class="btn-group">
-                    <a class="btn btn-warning btn-lg" role="button" href="https://www.mozilla.org/en-US/firefox/new/#download-fx">
-                        <p class="pull-right">Get Firefox</p>
-                        <img style="width:64px; height:64px;" class="media-object" src="http://webgraph.com/resources/facebookblocker/-/images/icon-firefox.png" alt="Get Firefox">
-                    </a>
-                </div>
-                <div class="btn-group">
-                    <a class="btn btn-primary btn-lg" role="button" href="https://www.google.com/chrome/browser/">
-                        <p class="pull-right">Get Google Chrome</p>
-                        <img style="width:64px; height:64px;" class="media-object" src="http://webgraph.com/resources/facebookblocker/-/images/icon-chrome.png" alt="Get Google Chrome">
-                    </a>
+        <!--[if lte IE 9]>
+        <div class="jumbotron" style="">
+            <h1>Internet Explorer 10+ required !</h1>
+            <div class="center-block">
+                <p><strong>In order to increase Theme Performance and User Experience, <br />we recommend you to choose among one of the three suggestions below :</strong></p>
+                <div class="spacer"></div>
+                <div class="btn-group btn-group-justified">
+                    <div class="btn-group">
+                        <a class="btn btn-info btn-lg" role="button" href="http://windows.microsoft.com/fr-fr/internet-explorer/download-ie">
+                            <p class="pull-right">Upgrade Internet Explorer</p>
+                            <img style="width:64px; height:64px;" class="media-object" src="http://clacson.uniroma3.it/file.php/1/IE.png" alt="Upgrade Internet Explorer">
+                        </a>
+                    </div>
+                    <div class="btn-group">
+                        <a class="btn btn-warning btn-lg" role="button" href="https://www.mozilla.org/en-US/firefox/new/#download-fx">
+                            <p class="pull-right">Get Firefox</p>
+                            <img style="width:64px; height:64px;" class="media-object" src="http://webgraph.com/resources/facebookblocker/-/images/icon-firefox.png" alt="Get Firefox">
+                        </a>
+                    </div>
+                    <div class="btn-group">
+                        <a class="btn btn-primary btn-lg" role="button" href="https://www.google.com/chrome/browser/">
+                            <p class="pull-right">Get Google Chrome</p>
+                            <img style="width:64px; height:64px;" class="media-object" src="http://webgraph.com/resources/facebookblocker/-/images/icon-chrome.png" alt="Get Google Chrome">
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <![endif]-->
-            <div id="content">
-                {%- block sidebar1 %}{{ bsidebar() }}{% endblock %}
-                <div>
-                    {% block body %}{% endblock %}
-                </div>
+        <![endif]-->
+        <div id="content">
+            {%- block sidebar1 %}{{ bsidebar() }}{% endblock %}
+            <div>
+                {% block body %}{% endblock %}
             </div>
         </div>
-
-        {% if current_project %}
-            {% if current_project.menu.right %}
-                <div id="panel" class="col-md-2 panel-group panel-info">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">IN THIS DOCUMENT</h3>
-                    </div>
-                    <div id="document-toc" class="panel-body">
-                        {{ toc }}
-                    </div>
-                    <div class="panel-footer">
-                        <a href="#">Back to Top</a>
-                    </div>
-                </div>
-            {% elif current_project.layout in ('2-columns-right', '3-columns') %}
-                <div class="col-md-2"></div>
-            {% endif %}
-        {% endif %}
     </div>
+
+    {% if current_project %}
+    {% if current_project.menu.right %}
+    <div id="panel" class="col-md-2 panel-group panel-info">
+        <div class="panel-heading">
+            <h3 class="panel-title">IN THIS DOCUMENT</h3>
+        </div>
+        <div id="document-toc" class="panel-body">
+            {{ toc }}
+        </div>
+        <div class="panel-footer">
+            <a href="#">Back to Top</a>
+        </div>
+    </div>
+    {% elif current_project.layout in ('2-columns-right', '3-columns') %}
+    <div class="col-md-2"></div>
+    {% endif %}
+    {% endif %}
+</div>
 {%- endblock %}
 {{ super() }}
 {%- block footer %}
 
-    <footer class="footer">
-        <div id="doctool-versions" class="btn-group dropup pull-right versions">
-            <button type="button" class="btn btn-secondary btn-lg dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                {{ VERSION }}
-                <span class="caret"></span>
-            </button>
-            <ul id="doctool-available-versions" class="dropdown-menu">
-            </ul>
-        </div>
-    </footer>
+<footer class="footer">
+    <div id="doctool-versions" class="btn-group dropup pull-right versions">
+        <button type="button" class="btn btn-secondary btn-lg dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{ VERSION }}
+            <span class="caret"></span>
+        </button>
+        <ul id="doctool-available-versions" class="dropdown-menu">
+        </ul>
+    </div>
+</footer>
 
-    <script>
-        var current_project_search = '{{ current_project.search }}' === 'True';
-        (function () {
-            function loadScripts(array, callback){
-                var loader = function(src, handler){
-                    var script = document.createElement("script");
-                    script.src = src;
-                    script.onload = script.onreadystatechange = function(){
-                        script.onreadystatechange = script.onload = null;
-                        handler();
-                    };
-                    var head = document.getElementsByTagName("head")[0];
-                    (head || document.body).appendChild( script );
-                };
-                (function run(){
-                    if(array.length !== 0){
-                        loader(array.shift(), run);
-                    }else{
-                        callback && callback();
-                    }
-                })();
-            }
-            var version = '{{ VERSION }}';
-            var documentationBaseURI = (window.location + '').split(version)[0];
-            var versionBaseURI = documentationBaseURI + version + '/';
+<script>
+    var current_project_search = '{{ current_project.search }}' === 'True';
+    (function () {
+        function loadScript(src) {
+            return new Promise((resolve, reject) => {
+                var script = document.createElement('script');
+                script.onload = resolve;
+                script.onerror = reject;
+                script.src = src;
+                script.type = 'text/javascript';
+                document.head.append(script);
+            })
+        }
 
-            var scripts = [
-                documentationBaseURI + 'doctool-versions.js',
-                versionBaseURI + 'doctool-settings.js',
-                versionBaseURI + 'doctool-common.js',
-                versionBaseURI + 'doctool.js'
-            ];
+        var version = '{{ VERSION }}';
+        var documentationBaseURI = (window.location + '').split(version)[0];
+        var versionBaseURI = documentationBaseURI + version + '/';
 
-            loadScripts(scripts, function () {
+        loadScript(versionBaseURI + '_static/js/jquery-1.12.4.min.js')
+            //     FIXME: disable jquery-fix as it breaks bootstrap execution - Don't know why
+            //     .then(function() {
+            //         return loadScript(versionBaseURI + '_static/js/jquery-fix.js')
+            //     })
+            .then(function() {
+                return loadScript(versionBaseURI + '_static/bootstrap-3.4.1/js/bootstrap.min.js')
+            })
+            .then(function() {
+                return loadScript(versionBaseURI + '_static/bootstrap-sphinx.js')
+            })
+            .then(function() {
+                return loadScript(documentationBaseURI + 'doctool-versions.js')
+            })
+            .then(function() {
+                return loadScript(versionBaseURI + 'doctool-settings.js')
+            })
+            .then(function() {
+                return loadScript(versionBaseURI + 'doctool-common.js')
+            })
+            .then(function() {
+                return loadScript(versionBaseURI + 'doctool.js')
+            })
+            .then(function() {
                 console.log('All scripts loaded')
             });
-        })();
-    </script>
+    })();
+</script>
 {% endblock %}

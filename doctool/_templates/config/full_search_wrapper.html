@@ -1,20 +1,29 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Search &mdash; {{ master_title }} ({{ VERSION }})</title>
-    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/bootstrap-3.3.7/css/bootstrap.min.css" type="text/css" />
-    <link rel="stylesheet" href="_static/bootstrap-3.3.7/css/bootstrap-theme.min.css" type="text/css" />
-    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=649a27d8" />
+    <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css?v=4468db6d" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
 
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <base id="doctool-anchor-base" target="_parent" />
+
+    <script type="text/javascript" src="_static/js/jquery-1.12.4.min.js"></script>
+    <!-- FIXME: disable super() call to remove jquery-fix as it breaks bootstrap execution - Don't know why -->
+    <!--    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>-->
+    <script type="text/javascript" src="_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
 
     <meta charset='utf-8'>
@@ -111,28 +120,28 @@
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 {% if home_project and home_project.nav %}
-                    <li {% if home_project.name == current_project_name %}class="active"{% endif %}>
-                        <a href="{{ VERSION }}/{{ home_project.first_link|e }}" >
-                            {% if home_project.icon %}<i class="{{ home_project.icon }}"></i>{% endif %} {{ home_project.name }}
-                        </a>
-                    </li>
+                <li {% if home_project.name == current_project_name %}class="active"{% endif %}>
+                    <a href="{{ VERSION }}/{{ home_project.first_link|e }}" >
+                        {% if home_project.icon %}<i class="{{ home_project.icon }}"></i>{% endif %} {{ home_project.name }}
+                    </a>
+                </li>
                 {% endif %}
                 {% if doc_projects %}
-                    {%- for project in doc_projects %}
-                        <li>
-                            <a href="/{{ VERSION }}/{{ project.first_link|e }}" >
-                                {% if project.icon %}<i class="{{ project.icon }}"></i>{% endif %} {{ project.name }}
-                            </a>
-                        </li>
-                    {% endfor %}
+                {%- for project in doc_projects %}
+                <li>
+                    <a href="/{{ VERSION }}/{{ project.first_link|e }}" >
+                        {% if project.icon %}<i class="{{ project.icon }}"></i>{% endif %} {{ project.name }}
+                    </a>
+                </li>
+                {% endfor %}
                 {% endif %}
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
                 {% if ISSUE_TRACKER_URI %}
-                    <a href="{{ ISSUE_TRACKER_URI }}" target="_blank" type="button" class="btn btn-warning navbar-btn">
-                        <i class="glyphicon glyphicon-bullhorn"></i> {{ ISSUE_TRACKER_TEXT | default("Issue Tracker") }}
-                    </a>
+                <a href="{{ ISSUE_TRACKER_URI }}" target="_blank" type="button" class="btn btn-warning navbar-btn">
+                    <i class="glyphicon glyphicon-bullhorn"></i> {{ ISSUE_TRACKER_TEXT | default("Issue Tracker") }}
+                </a>
                 {% endif %}
             </ul>
 
@@ -141,40 +150,40 @@
 
                     <div class="btn-group">
                         {% if (doc_projects and doc_projects|length > 1) or (api_doc_projects and api_doc_projects|length > 1) or (doc_projects and api_doc_projects)  %}
-                            <button id="doctool-search-text-box" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                All Projects <i class="glyphicon glyphicon-filter"></i>
-                            </button>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="#" data-target="{{ VERSION }}/search.html" class="active">All Projects</a></li>
-                                {% if doc_projects %}
-                                    <li class="divider"></li>
-                                    {%- for project in doc_projects %}
-                                        {% if project.search %}
-                                            <li>
-                                                <a href="#" data-target="{{ VERSION }}/{{ project.id }}/search.html">
-                                                    {% if project.icon %}<i class="{{ project.icon }}"></i>{% endif %} {{ project.name }}
-                                                </a>
-                                            </li>
-                                        {% endif %}
-                                    {% endfor %}
-                                {% endif %}
-                                {% if api_doc_projects %}
-                                    {% if doc_projects %}<li class="divider"></li>{% endif %}
-                                    {%- for project in api_doc_projects %}
-                                        {% if project.search %}
-                                            <li>
-                                                <a href="#" data-target="{{ VERSION }}/{{ project.id }}/search.html">
-                                                    {% if project.icon %}<i class="{{ project.icon }}"></i>{% endif %} {{ project.name }}
-                                                </a>
-                                            </li>
-                                        {% endif %}
-                                    {% endfor %}
-                                {% endif %}
-                            </ul>
+                        <button id="doctool-search-text-box" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            All Projects <i class="glyphicon glyphicon-filter"></i>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="#" data-target="{{ VERSION }}/search.html" class="active">All Projects</a></li>
+                            {% if doc_projects %}
+                            <li class="divider"></li>
+                            {%- for project in doc_projects %}
+                            {% if project.search %}
+                            <li>
+                                <a href="#" data-target="{{ VERSION }}/{{ project.id }}/search.html">
+                                    {% if project.icon %}<i class="{{ project.icon }}"></i>{% endif %} {{ project.name }}
+                                </a>
+                            </li>
+                            {% endif %}
+                            {% endfor %}
+                            {% endif %}
+                            {% if api_doc_projects %}
+                            {% if doc_projects %}<li class="divider"></li>{% endif %}
+                            {%- for project in api_doc_projects %}
+                            {% if project.search %}
+                            <li>
+                                <a href="#" data-target="{{ VERSION }}/{{ project.id }}/search.html">
+                                    {% if project.icon %}<i class="{{ project.icon }}"></i>{% endif %} {{ project.name }}
+                                </a>
+                            </li>
+                            {% endif %}
+                            {% endfor %}
+                            {% endif %}
+                        </ul>
                         {% else %}
-                            <button id="doctool-search-text-box" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                {{current_project_name}} <i class="glyphicon glyphicon-filter"></i>
-                            </button>
+                        <button id="doctool-search-text-box" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            {{current_project_name}} <i class="glyphicon glyphicon-filter"></i>
+                        </button>
                         {% endif %}
                     </div>
 
@@ -192,30 +201,30 @@
             <ul class="nav navbar-nav navbar-right">
 
                 {% if api_doc_projects %}
-                    {% if api_doc_projects|length > 1 %}
-                        <li class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                                API References <span class="caret"></span>
-                            </a>
-                            <ul class="dropdown-menu" role="menu">
-                                {%- for project in api_doc_projects %}
-                                    <li {% if project.name == current_project_name %}class="active"{% endif %}>
-                                        <a href="{{ VERSION }}/{{ project.first_link|e }}" >
-                                            {% if project.icon %}<i class="{{ project.icon }}"></i>{% endif %} {{ project.name }}
-                                        </a>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </li>
-                    {% else %}
+                {% if api_doc_projects|length > 1 %}
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        API References <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" role="menu">
                         {%- for project in api_doc_projects %}
-                            <li {% if project.name == current_project_name %}class="active"{% endif %}>
-                                <a href="{{ VERSION }}/{{ project.first_link|e }}" >
-                                    {% if project.icon %}<i class="{{ project.icon }}"></i>{% endif %} {{ project.name }}
-                                </a>
-                            </li>
+                        <li {% if project.name == current_project_name %}class="active"{% endif %}>
+                            <a href="{{ VERSION }}/{{ project.first_link|e }}" >
+                                {% if project.icon %}<i class="{{ project.icon }}"></i>{% endif %} {{ project.name }}
+                            </a>
+                        </li>
                         {% endfor %}
-                    {% endif %}
+                    </ul>
+                </li>
+                {% else %}
+                {%- for project in api_doc_projects %}
+                <li {% if project.name == current_project_name %}class="active"{% endif %}>
+                    <a href="{{ VERSION }}/{{ project.first_link|e }}" >
+                        {% if project.icon %}<i class="{{ project.icon }}"></i>{% endif %} {{ project.name }}
+                    </a>
+                </li>
+                {% endfor %}
+                {% endif %}
                 {% endif %}
             </ul>
 
@@ -249,37 +258,37 @@
 
                 <div id="search-results">
                     {% if doc_projects %}
-                        {%- for project in doc_projects %}
-                            {% if project.search %}
-                                <div>
-                                    <h2 class="alert alert-success" id="head-{{ project.id }}">Found in <strong>{{ project.name }}</strong> Project</h2>
-                                    <img id="{{ project.id }}-loader" src="_static/file.png" class="loaders pull-right">
-                                    <iframe id="{{ project.id }}"
-                                            class="iframe-frame center-block"
-                                            src="{{ project.id }}/search.html?mode=search"
-                                            scrolling="no" frameborder="0" width="100%" marginheight="0" marginwidth="0" height="100%"></iframe>
-                                    <div class="spacer"></div>
-                                </div>
-                                <div class="clearfix"></div>
-                            {% endif %}
-                        {% endfor %}
+                    {%- for project in doc_projects %}
+                    {% if project.search %}
+                    <div>
+                        <h2 class="alert alert-success" id="head-{{ project.id }}">Found in <strong>{{ project.name }}</strong> Project</h2>
+                        <img id="{{ project.id }}-loader" src="_static/file.png" class="loaders pull-right">
+                        <iframe id="{{ project.id }}"
+                                class="iframe-frame center-block"
+                                src="{{ project.id }}/search.html?mode=search"
+                                scrolling="no" frameborder="0" width="100%" marginheight="0" marginwidth="0" height="100%"></iframe>
+                        <div class="spacer"></div>
+                    </div>
+                    <div class="clearfix"></div>
+                    {% endif %}
+                    {% endfor %}
                     {% endif %}
                     {% if api_doc_projects %}
-                        {%- for project in api_doc_projects %}
-                            {% if project.search %}
-                                <div>
-                                    <h2 class="alert alert-success" id="head-{{ project.id }}">Found in <strong>{{ project.name }}</strong> Project</h2>
-                                    <img id="{{ project.id }}-loader" src="_static/file.png" class="loaders pull-right">
-                                    <iframe id="{{ project.id }}"
-                                            style="position: relative; height: 100%; width: 100%;"
-                                            class="iframe-frame center-block"
-                                            src="{{ project.id }}/search.html?mode=search"
-                                            scrolling="no" frameborder="0" width="100%" marginheight="0" marginwidth="0" height="100%"></iframe>
-                                    <div class="spacer"></div>
-                                </div>
-                                <div class="clearfix"></div>
-                            {% endif %}
-                        {% endfor %}
+                    {%- for project in api_doc_projects %}
+                    {% if project.search %}
+                    <div>
+                        <h2 class="alert alert-success" id="head-{{ project.id }}">Found in <strong>{{ project.name }}</strong> Project</h2>
+                        <img id="{{ project.id }}-loader" src="_static/file.png" class="loaders pull-right">
+                        <iframe id="{{ project.id }}"
+                                style="position: relative; height: 100%; width: 100%;"
+                                class="iframe-frame center-block"
+                                src="{{ project.id }}/search.html?mode=search"
+                                scrolling="no" frameborder="0" width="100%" marginheight="0" marginwidth="0" height="100%"></iframe>
+                        <div class="spacer"></div>
+                    </div>
+                    <div class="clearfix"></div>
+                    {% endif %}
+                    {% endfor %}
                     {% endif %}
                 </div>
             </div>
@@ -293,26 +302,26 @@
         <div id="document-toc" class="panel-body">
             <ul class="nav navbar-nav">
                 {% if doc_projects %}
-                    {%- for project in doc_projects %}
-                        {% if project.search %}
-                            <li>
-                                <a href="#head-{{ project.id }}" >
-                                    {% if project.icon %}<i class="{{ project.icon }}"></i>{% endif %} {{ project.name }}
-                                </a>
-                            </li>
-                        {% endif %}
-                    {% endfor %}
+                {%- for project in doc_projects %}
+                {% if project.search %}
+                <li>
+                    <a href="#head-{{ project.id }}" >
+                        {% if project.icon %}<i class="{{ project.icon }}"></i>{% endif %} {{ project.name }}
+                    </a>
+                </li>
+                {% endif %}
+                {% endfor %}
                 {% endif %}
                 {% if api_doc_projects %}
-                    {%- for project in api_doc_projects %}
-                        {% if project.search %}
-                            <li>
-                                <a href="#head-{{ project.id }}" >
-                                    {% if project.icon %}<i class="{{ project.icon }}"></i>{% endif %} {{ project.name }}
-                                </a>
-                            </li>
-                        {% endif %}
-                    {% endfor %}
+                {%- for project in api_doc_projects %}
+                {% if project.search %}
+                <li>
+                    <a href="#head-{{ project.id }}" >
+                        {% if project.icon %}<i class="{{ project.icon }}"></i>{% endif %} {{ project.name }}
+                    </a>
+                </li>
+                {% endif %}
+                {% endfor %}
                 {% endif %}
             </ul>
         </div>
@@ -336,39 +345,34 @@
 
 <script>
     (function () {
-        function loadScripts(array, callback){
-            var loader = function(src, handler){
-                var script = document.createElement("script");
+        function loadScript(src) {
+            return new Promise((resolve, reject) => {
+                var script = document.createElement('script');
+                script.onload = resolve;
+                script.onerror = reject;
                 script.src = src;
-                script.onload = script.onreadystatechange = function(){
-                    script.onreadystatechange = script.onload = null;
-                    handler();
-                };
-                var head = document.getElementsByTagName("head")[0];
-                (head || document.body).appendChild( script );
-            };
-            (function run(){
-                if(array.length !== 0){
-                    loader(array.shift(), run);
-                }else{
-                    callback && callback();
-                }
-            })();
+                script.type = 'text/javascript';
+                document.head.append(script);
+            })
         }
+
         var version = '{{ VERSION }}';
         var documentationBaseURI = (window.location + '').split(version)[0];
         var versionBaseURI = documentationBaseURI + version + '/';
 
-        var scripts = [
-            documentationBaseURI + 'doctool-versions.js',
-            versionBaseURI + 'doctool-settings.js',
-            versionBaseURI + 'doctool-common.js',
-            versionBaseURI + 'doctool-search.js'
-        ];
-
-        loadScripts(scripts, function () {
-            console.log('All scripts loaded')
-        });
+        loadScript(documentationBaseURI + 'doctool-versions.js')
+            .then(function() {
+                return loadScript(versionBaseURI + 'doctool-settings.js')
+            })
+            .then(function() {
+                return loadScript(versionBaseURI + 'doctool-common.js')
+            })
+            .then(function() {
+                return loadScript(versionBaseURI + 'doctool.js')
+            })
+            .then(function() {
+                console.log('All scripts loaded')
+            });
     })();
 </script>
 </body>
