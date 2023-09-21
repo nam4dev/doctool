@@ -46,7 +46,7 @@ __ROOTDIR__ = os.path.dirname(
 DOCTOOL_ROOTDIR = __ROOTDIR__
 sys.path.insert(0, DOCTOOL_ROOTDIR)
 
-__version__ = '0.9.2.0'
+__version__ = '0.9.3.0'
 __author_email__ = 'namat4css@gmail.com'
 __description__ = """\
 Doctool is written in python overlaying Sphinx \

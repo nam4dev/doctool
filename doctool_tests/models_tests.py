@@ -25,7 +25,7 @@ SOFTWARE.
 import unittest
 import unittest.mock as mock
 
-from tests.common import Helper
+from doctool_tests.common import Helper
 from doctool.models import Theme
 from doctool.models import RSTProject
 from doctool.models import CodeProject
@@ -150,6 +150,7 @@ class CodeProjectTests(unittest.TestCase):
                 uid=project.id,
                 project_name=project.name,
                 master_doc='index',
+                html_static_paths=[],
                 output_dir=project.helper.absjoin(manager.output_dir, project.id),
                 source_dir=project.src_dirname,
                 output_format=project._output_format,

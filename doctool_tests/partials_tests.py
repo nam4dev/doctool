@@ -25,7 +25,7 @@ SOFTWARE.
 import unittest
 import unittest.mock as mock
 
-from tests.common import Helper
+from doctool_tests.common import Helper
 
 from doctool import settings
 from doctool.helpers import Types
@@ -102,6 +102,7 @@ class PartialProjectTests(unittest.TestCase):
         data = dict(
             uid=project.id,
             project_name=project.name,
+            html_static_paths=[],
             master_doc='index',
             output_dir=project.helper.absjoin(manager.output_dir, project.id),
             source_dir=project.src_dirname,
