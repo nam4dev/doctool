@@ -831,12 +831,13 @@ class ExtensionManager(object):
             * Validating path
             * Ensuring default values to be set
         """
+        stubbed_plantuml_conf = dict(java=None, java_bin=None, jar=None, plantuml_jar=None)
         # first reading Configuration, setting default behavior if not found in config
-        plantuml_conf = Types.AttributeDict(cls._configuration.get('PLANTUML', {}))
+        plantuml_conf = Types.AttributeDict(cls._configuration.get('PLANTUML') or stubbed_plantuml_conf)
         # Graphviz is mandatory, in order to use Plant UML
 
         if 'GRAPHVIZ' in cls._extensions and plantuml_conf:
-            # In most of case, on WINDOWS platforms Java is installed at:
+            # In most of the cases, on WINDOWS platforms Java is installed at:
             # C:\windows\system32\java.exe
             java_bin = plantuml_conf.get('java', settings.LOGICAL_JAVA_BIN_PATH)
 
@@ -857,6 +858,8 @@ class ExtensionManager(object):
                         if ProjectHelper.exists(hint):
                             plantuml_conf['plantuml_jar'] = hint
                             break
+            else:
+                plantuml_conf['java_bin'] = java_bin
 
         uml_disabled = 'UML Diagrams are therefore NOT enabled!'
         if ProjectHelper.exists(plantuml_conf.get('java_bin')):
@@ -884,8 +887,15 @@ class ExtensionManager(object):
         if not cls._configuration:
             raise MissingConfigurationError()
 
-        cls.__manage_graphviz()
-        cls.__manage_plantuml()
+        try:
+            cls.__manage_graphviz()
+        except (KeyError, Exception) as error:
+            logger.warning('GRAPHVIZ: Issue while determining parameters ({})'.format(error))
+
+        try:
+            cls.__manage_plantuml()
+        except (KeyError, Exception) as error:
+            logger.warning('PLANTUML: Issue while determining parameters ({})'.format(error))
 
     @classmethod
     def extensions(cls):
