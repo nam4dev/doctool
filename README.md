@@ -34,7 +34,7 @@ The global doctool_settings.json describes global context to generate documentat
     "ORGANISATION": "<ORGANISATION>",
     "LOG_LEVEL": "INFO",
     "HOME_ICON": "ice-lolly",
-    "PY_VERSION": "3.8",
+    "PY_VERSION": "3.12",
     "JIRA_PROJECT_URI": "https://jira.com/browse/",
     "ISSUE_TRACKER_URI": "https://jira.com/secure/CreateIssue!default.jspa",
     "ISSUE_TRACKER_TEXT": "Report an Issue",
